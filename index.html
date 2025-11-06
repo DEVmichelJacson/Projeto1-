@@ -6,26 +6,38 @@
 	<title>SKYFIT — Academia</title>
 	<link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
-	<header class="site-header">
+	<header class="site-header" id="siteHeader">
 		<div class="container header-inner">
 			<a class="brand" href="#">
-				<!-- Logo: caveira com raio (SVG) -->
-				<svg width="48" height="48" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+				<!-- SVG da logo: caveira com raio (paleta avermelhada) -->
+				<svg class="logo-svg" width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" aria-label="Logo SKYFIT - caveira com raio">
 					<defs>
-						<linearGradient id="g1" x1="0" x2="1">
-							<stop offset="0%" stop-color="#ffd54a" />
-							<stop offset="100%" stop-color="#ff6b6b" />
+						<linearGradient id="redG" x1="0" x2="1">
+							<stop offset="0%" stop-color="#ff3b3b" />
+							<stop offset="50%" stop-color="#ff6b6b" />
+							<stop offset="100%" stop-color="#ffb86b" />
 						</linearGradient>
+						<filter id="glowRed" x="-50%" y="-50%" width="200%" height="200%">
+							<feGaussianBlur stdDeviation="2.8" result="coloredBlur" />
+							<feMerge>
+								<feMergeNode in="coloredBlur" />
+								<feMergeNode in="SourceGraphic" />
+							</feMerge>
+						</filter>
 					</defs>
-					<!-- caveira estilizada -->
-					<g fill="none" stroke="#fff" stroke-width="1.6" transform="translate(4,4)">
-						<path d="M28 0 C18 0 10 6 10 14 C10 20 14 24 14 24 C12 28 8 32 8 36 C8 44 16 48 28 48 C40 48 48 44 48 36 C48 32 44 28 42 24 C42 24 46 20 46 14 C46 6 38 0 28 0 Z" fill="#1b1f3b" />
-						<!-- olhos -->
-						<circle cx="18" cy="20" r="3" fill="#fff" />
-						<circle cx="38" cy="20" r="3" fill="#fff" />
-						<!-- raio sobreposto -->
-						<path d="M34 8 L24 26 L32 26 L22 44" stroke="url(#g1)" stroke-width="3" fill="none" stroke-linejoin="round" />
+					<!-- caveira base -->
+					<g filter="url(#glowRed)" transform="translate(2,2)">
+						<path d="M32 6 C22 6 14 12 14 20 C14 26 18 30 18 30 C16 34 12 38 12 42 C12 50 20 54 32 54 C44 54 52 50 52 42 C52 38 48 34 46 30 C46 30 50 26 50 20 C50 12 42 6 32 6 Z" fill="#0b0b0b" stroke="url(#redG)" stroke-width="1.6"/>
+						<!-- olhos vazados com brilho vermelho -->
+						<ellipse cx="22.5" cy="22.5" rx="3.2" ry="3.8" fill="#ff3b3b" opacity="0.95" filter="url(#glowRed)"/>
+						<ellipse cx="41.5" cy="22.5" rx="3.2" ry="3.8" fill="#ff3b3b" opacity="0.95" filter="url(#glowRed)"/>
+						<!-- contornos dos olhos -->
+						<path d="M20 24 C22 20 26 20 28 24 C26 26 22 26 20 24 Z" fill="none" stroke="#ff6b6b" stroke-width="1.2" opacity="0.8"/>
+						<path d="M44 24 C42 20 38 20 36 24 C38 26 42 26 44 24 Z" fill="none" stroke="#ff6b6b" stroke-width="1.2" opacity="0.8"/>
+						<!-- mandíbula -->
+						<path d="M24 36 C28 34 32 34 36 34 C40 34 44 36 44 36" stroke="#ff3b3b" stroke-width="1.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+						<!-- Raio central, mais definido e brilhante -->
+						<path class="bolt" d="M38 10 L28 30 L36 30 L24 50" stroke="url(#redG)" stroke-width="3.8" stroke-linejoin="round" fill="none" opacity="0.98" filter="url(#glowRed)"/>
 					</g>
 				</svg>
 				<span class="brand-name">SKYFIT</span>
@@ -46,15 +58,17 @@
 
 	<main>
 		<section id="home" class="hero">
+			<!-- parallax / partículas -->
+			<div class="hero-bg" aria-hidden="true"></div>
+			<div class="hero-particles" aria-hidden="true"></div>
 			<div class="container hero-inner">
-				<div class="hero-text">
-					<h1>SKYFIT</h1>
-					<p>Transforme seu corpo. Supere seus limites. Treine com a energia do raio.</p>
+				<div class="hero-text" data-observe>
+					<h1 class="hero-title">SKYFIT</h1>
+					<p class="hero-sub">Transforme seu corpo. Supere seus limites. Treine com a energia do raio.</p>
 					<a class="btn primary" href="#plans">Conheça os planos</a>
 				</div>
-				<div class="hero-image" aria-hidden="true">
-					<!-- decoração simples -->
-					<div class="card">Bem-vindo à SKYFIT</div>
+				<div class="hero-image" aria-hidden="true" data-observe>
+					<div class="card hero-card">Bem-vindo à <strong>SKYFIT</strong></div>
 				</div>
 			</div>
 		</section>

@@ -1,4 +1,4 @@
-// JS simples para interatividade do site SKYFIT
+// JS avançado para interatividade do site SKYFIT (menu, header scroll, fade-in, partículas, formulário)
 document.addEventListener('DOMContentLoaded', function(){
   // ano no rodapé
   const yearEl = document.getElementById('year');
@@ -13,9 +13,136 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
-  // formulário: validação simples e mensagem
+  // header: alterar visual ao rolar
+  const header = document.getElementById('siteHeader');
+  const onScroll = () => {
+    if(window.scrollY > 20) header.classList.add('scrolled'); else header.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // IntersectionObserver para fade-in on scroll
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        observer.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.12});
+  document.querySelectorAll('[data-observe]').forEach(el=>{
+    el.classList.add('fade-hidden');
+    observer.observe(el);
+  });
+
+  // Efeitos visuais no hero (raios, anilhas e halteres)
+  const particlesRoot = document.querySelector('.hero-particles');
+  if(particlesRoot){
+    const rootStyle = getComputedStyle(document.documentElement);
+    const neonA = (rootStyle.getPropertyValue('--neon-a') || '#ff2828').trim();
+    const neonB = (rootStyle.getPropertyValue('--neon-b') || '#ff5151').trim();
+
+    // Raios energéticos
+    for(let i=0; i<12; i++){
+      const bolt = document.createElement('div');
+      bolt.className = 'bolt-el';
+      const left = Math.random()*100;
+      const height = 40 + Math.random()*100;
+      const rotate = -35 + Math.random()*70;
+      
+      bolt.style.cssText = `
+        left: ${left}%;
+        top: ${10 + Math.random()*60}%;
+        height: ${height}px;
+        transform: translateX(-50%) rotate(${rotate}deg);
+        background: linear-gradient(180deg, ${neonA}, ${neonB});
+        opacity: ${0.1 + Math.random()*0.4};
+        filter: blur(0.8px);
+      `;
+      
+      particlesRoot.appendChild(bolt);
+      
+      // Animação pulsante
+      setInterval(() => {
+        bolt.style.opacity = (0.05 + Math.random()*0.5).toString();
+        bolt.style.height = (height - 10 + Math.random()*20) + 'px';
+      }, 1000 + Math.random()*1500);
+    }
+
+    // Anilhas flutuantes
+    for(let i=0; i<8; i++){
+      const weight = document.createElement('div');
+      weight.className = 'weight-plate';
+      const size = 30 + Math.random()*40;
+      
+      weight.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        border-radius: 50%;
+        border: ${2 + size/20}px solid ${neonA};
+        left: ${Math.random()*100}%;
+        top: ${Math.random()*100}%;
+        opacity: 0.1;
+        transform: scale(0.8);
+        filter: blur(1px);
+        transition: all 0.5s ease;
+      `;
+      
+      particlesRoot.appendChild(weight);
+      
+      // Animação suave
+      setInterval(() => {
+        weight.style.transform = `scale(${0.7 + Math.random()*0.3})`;
+        weight.style.opacity = (0.05 + Math.random()*0.15).toString();
+      }, 2000 + Math.random()*2000);
+    }
+
+    // Halteres decorativos
+    for(let i=0; i<5; i++){
+      const dumbbell = document.createElement('div');
+      dumbbell.className = 'dumbbell';
+      
+      dumbbell.style.cssText = `
+        position: absolute;
+        width: 60px;
+        height: 12px;
+        left: ${Math.random()*100}%;
+        top: ${Math.random()*100}%;
+        background: linear-gradient(90deg, ${neonA}, ${neonB});
+        opacity: 0.1;
+        transform: rotate(${Math.random()*180}deg);
+        filter: blur(1px);
+        border-radius: 6px;
+        &::before, &::after {
+          content: '';
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: ${neonA};
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        &::before { left: -10px; }
+        &::after { right: -10px; }
+      `;
+      
+      particlesRoot.appendChild(dumbbell);
+      
+      // Rotação suave
+      let rotation = Math.random()*180;
+      setInterval(() => {
+        rotation += 0.5;
+        dumbbell.style.transform = `rotate(${rotation}deg)`;
+      }, 50);
+    }
+  }
+
+  // formulário: validação simples, feedback visual e animação de sucesso
   const form = document.getElementById('contactForm');
   const status = document.querySelector('.form-status');
+  const submitBtn = form?.querySelector('button[type="submit"]');
   if(form){
     form.addEventListener('submit', function(e){
       e.preventDefault();
@@ -27,12 +154,27 @@ document.addEventListener('DOMContentLoaded', function(){
         if(status) status.textContent = 'Por favor, preencha todos os campos.';
         return;
       }
-      // Simular envio
-      if(status) status.textContent = 'Enviando...';
-      setTimeout(()=>{
-        form.reset();
-        if(status) status.textContent = 'Mensagem enviada! Entraremos em contato em breve.';
-      }, 900);
+      // feedback de envio
+      if(submitBtn){
+        submitBtn.disabled = true;
+        submitBtn.classList.add('btn-sending');
+        const original = submitBtn.textContent;
+        submitBtn.textContent = 'Enviando...';
+        setTimeout(()=>{
+          // animação de sucesso
+          submitBtn.classList.remove('btn-sending');
+          submitBtn.classList.add('btn-success');
+          submitBtn.textContent = 'Enviado ✓';
+          form.reset();
+          if(status) status.textContent = 'Mensagem enviada! Entraremos em contato em breve.';
+          setTimeout(()=>{
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('btn-success');
+            submitBtn.textContent = original;
+            if(status) status.textContent = '';
+          }, 2400);
+        }, 1000);
+      }
     });
   }
 });
