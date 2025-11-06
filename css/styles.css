@@ -382,6 +382,28 @@ body{
   position: relative;
 }
 
+/* Plan icon adjustments */
+.plan-icon svg{display:block;filter:drop-shadow(0 8px 18px rgba(255,40,40,0.08));}
+.plan h3{margin:0 0 .4rem 0}
+.plan .price{font-weight:800;margin:1rem 0}
+
+/* Input icons */
+.input-group{position:relative}
+.input-group .input-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px}
+.input-group input,.input-group textarea{padding-left:48px}
+
+/* Form feedback / success */
+.form-feedback{display:flex;align-items:center;gap:.8rem;margin-top:.6rem}
+.form-feedback .checkmark{display:inline-flex;align-items:center;justify-content:center;transition:transform .5s cubic-bezier(.2,.9,.2,1),opacity .4s}
+.form-feedback .checkmark.show{transform:scale(1.06);opacity:1}
+.form-feedback .checkmark.hide{transform:scale(0.4);opacity:0}
+
+/* small responsive tweaks */
+@media(max-width:900px){
+  .plan-icon{width:48px;height:48px}
+  .hero-title{font-size:3.2rem}
+}
+
 /* Features */
 .features{display:flex;gap:1rem;flex-wrap:wrap;padding:0;list-style:none}
 .features li{background:rgba(255,255,255,0.02);padding:.6rem 1rem;border-radius:999px;color:var(--muted)}

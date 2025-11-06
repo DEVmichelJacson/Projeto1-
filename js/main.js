@@ -144,6 +144,17 @@ document.addEventListener('DOMContentLoaded', function(){
   const status = document.querySelector('.form-status');
   const submitBtn = form?.querySelector('button[type="submit"]');
   if(form){
+    // adicionar listeners aos inputs para feedback instantâneo
+    const inputs = form.querySelectorAll('input, textarea');
+    inputs.forEach(inp=>{
+      inp.addEventListener('input', (e)=>{
+        if(e.target.value && e.target.value.trim().length>0) e.target.classList.add('has-value'); else e.target.classList.remove('has-value');
+      });
+    });
+
+    // elemento checkmark para animação
+    const check = form.querySelector('.checkmark');
+
     form.addEventListener('submit', function(e){
       e.preventDefault();
       const formData = new FormData(form);
@@ -167,6 +178,17 @@ document.addEventListener('DOMContentLoaded', function(){
           submitBtn.textContent = 'Enviado ✓';
           form.reset();
           if(status) status.textContent = 'Mensagem enviada! Entraremos em contato em breve.';
+          // mostrar checkmark com animação
+          if(check){
+            check.hidden = false;
+            check.classList.remove('hide');
+            check.classList.add('show');
+            setTimeout(()=>{
+              check.classList.remove('show');
+              check.classList.add('hide');
+              setTimeout(()=> check.hidden = true, 500);
+            }, 1400);
+          }
           setTimeout(()=>{
             submitBtn.disabled = false;
             submitBtn.classList.remove('btn-success');

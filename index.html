@@ -82,18 +82,40 @@
 			<h2>Planos</h2>
 			<div class="grid">
 				<div class="card plan">
+					<div class="plan-icon" aria-hidden="true">
+						<!-- dumbbell svg -->
+						<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<rect x="1" y="9" width="4" height="6" rx="1" fill="var(--neon-a)"/>
+							<rect x="19" y="9" width="4" height="6" rx="1" fill="var(--neon-b)"/>
+							<rect x="6" y="11" width="12" height="2" rx="1" fill="rgba(255,255,255,0.06)"/>
+						</svg>
+					</div>
 					<h3>Mensal</h3>
 					<p>Treinos livres, acesso às aulas em grupo.</p>
 					<div class="price">R$ 99 / mês</div>
 					<a class="btn" href="#contact">Assinar</a>
 				</div>
 				<div class="card plan featured">
+					<div class="plan-icon" aria-hidden="true">
+						<!-- weight plate svg -->
+						<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<circle cx="12" cy="12" r="9" stroke="var(--neon-a)" stroke-width="1.6" fill="rgba(0,0,0,0.35)"/>
+							<circle cx="12" cy="12" r="3" fill="var(--neon-b)"/>
+						</svg>
+					</div>
 					<h3>Trimestral</h3>
 					<p>Desconto e avaliação gratuita com treinador.</p>
 					<div class="price">R$ 259 / 3 meses</div>
 					<a class="btn primary" href="#contact">Assinar</a>
 				</div>
 				<div class="card plan">
+					<div class="plan-icon" aria-hidden="true">
+						<!-- kettlebell svg -->
+						<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M12 7a3 3 0 00-3 3v1h6V10a3 3 0 00-3-3z" fill="var(--neon-a)"/>
+							<path d="M7 13a5 5 0 0010 0v-1H7v1z" fill="rgba(255,255,255,0.06)"/>
+						</svg>
+					</div>
 					<h3>Anual</h3>
 					<p>Melhor custo-benefício e bônus de aulas.</p>
 					<div class="price">R$ 899 / ano</div>
@@ -117,14 +139,48 @@
 			<h2>Contato</h2>
 			<form id="contactForm">
 				<div class="form-row">
-					<input type="text" name="name" placeholder="Seu nome" required>
-					<input type="email" name="email" placeholder="Seu e-mail" required>
+					<div class="input-group">
+						<span class="input-icon" aria-hidden="true">
+							<!-- user icon -->
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M12 12a4 4 0 100-8 4 4 0 000 8z" fill="var(--neon-a)"/>
+								<path d="M4 20a8 8 0 0116 0" fill="rgba(255,255,255,0.06)"/>
+							</svg>
+						</span>
+						<input type="text" name="name" placeholder="Seu nome" required>
+					</div>
+					<div class="input-group">
+						<span class="input-icon" aria-hidden="true">
+							<!-- mail icon -->
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M3 6.5v11A2.5 2.5 0 005.5 20h13a2.5 2.5 0 002.5-2.5v-11" stroke="var(--neon-b)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M21 6.5l-9 6-9-6" stroke="rgba(255,255,255,0.06)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</span>
+						<input type="email" name="email" placeholder="Seu e-mail" required>
+					</div>
 				</div>
 				<div class="form-row">
-					<textarea name="message" rows="4" placeholder="Mensagem" required></textarea>
+					<div class="input-group">
+						<span class="input-icon" aria-hidden="true">
+							<!-- message icon -->
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z" fill="rgba(255,255,255,0.04)"/>
+							</svg>
+						</span>
+						<textarea name="message" rows="4" placeholder="Mensagem" required></textarea>
+					</div>
 				</div>
 				<button class="btn primary" type="submit">Enviar</button>
-				<p class="form-status" aria-live="polite"></p>
+				<div class="form-feedback">
+					<span class="checkmark" aria-hidden="true" hidden>
+						<svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<circle cx="12" cy="12" r="10" stroke="var(--neon-a)" stroke-width="1.6" fill="rgba(0,0,0,0.4)"/>
+							<path d="M7 12l3 3 7-7" stroke="var(--neon-b)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</span>
+					<p class="form-status" aria-live="polite"></p>
+				</div>
 			</form>
 		</section>
 	</main>
