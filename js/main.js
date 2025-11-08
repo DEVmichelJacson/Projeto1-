@@ -1,12 +1,32 @@
 // JS avançado para interatividade do site SKYFIT (menu, header scroll, fade-in, partículas, formulário)
 document.addEventListener('DOMContentLoaded', function(){
-  // --- Optional Supabase configuration ---
+  // --- Optional backend / Supabase configuration ---
   // To enable saving contacts to Supabase, set these two constants to your project values.
   // Example:
   // const SUPABASE_URL = 'https://xyzabc.supabase.co';
   // const SUPABASE_ANON_KEY = 'eyJhbGciOiJI...';
   const SUPABASE_URL = '';
   const SUPABASE_ANON_KEY = '';
+  // If you prefer to use your own backend (Node/Express + MySQL), set API_ENDPOINT to
+  // e.g. 'http://localhost:3000/api/contact' and the frontend will post there first.
+  const API_ENDPOINT = '';
+
+  // Helper: post contact to a self-hosted backend endpoint
+  async function postToBackendEndpoint({ name, email, message }){
+    if(!API_ENDPOINT) return { ok: false, error: 'API_ENDPOINT not configured' };
+    try{
+      const res = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, message })
+      });
+      const data = await res.json();
+      if(!res.ok) return { ok: false, error: data };
+      return { ok: true, data };
+    }catch(err){
+      return { ok: false, error: err.message || err };
+    }
+  }
 
   // Helper: insert contact into Supabase via the REST endpoint (no client lib required)
   async function supabaseInsertContact({ name, email, message }){
@@ -204,18 +224,29 @@ document.addEventListener('DOMContentLoaded', function(){
         submitBtn.textContent = 'Enviando...';
         (async ()=>{
           // If Supabase is configured, try to insert to the DB. Otherwise fall back to local success animation.
-          let supaResult = { ok: false };
-          if(SUPABASE_URL && SUPABASE_ANON_KEY){
-            supaResult = await supabaseInsertContact({ name, email, message: msg });
+          // Try backend endpoint first (if configured), then Supabase (if configured)
+          let backendResult = { ok: false };
+          if(API_ENDPOINT){
+            backendResult = await postToBackendEndpoint({ name, email, message: msg });
+            if(!backendResult.ok){
+              submitBtn.disabled = false;
+              submitBtn.classList.remove('btn-sending');
+              submitBtn.textContent = original;
+              if(status) status.textContent = 'Erro ao enviar (backend): ' + (backendResult.error?.message || JSON.stringify(backendResult.error));
+              return;
+            }
           }
 
-          // If Supabase was used and returned an error, show it and abort success animation
-          if(supaResult && supaResult.ok === false && (SUPABASE_URL && SUPABASE_ANON_KEY)){
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('btn-sending');
-            submitBtn.textContent = original;
-            if(status) status.textContent = 'Erro ao enviar (Supabase): ' + (supaResult.error?.message || JSON.stringify(supaResult.error));
-            return;
+          let supaResult = { ok: false };
+          if(!API_ENDPOINT && SUPABASE_URL && SUPABASE_ANON_KEY){
+            supaResult = await supabaseInsertContact({ name, email, message: msg });
+            if(!supaResult.ok){
+              submitBtn.disabled = false;
+              submitBtn.classList.remove('btn-sending');
+              submitBtn.textContent = original;
+              if(status) status.textContent = 'Erro ao enviar (Supabase): ' + (supaResult.error?.message || JSON.stringify(supaResult.error));
+              return;
+            }
           }
 
           // sucesso (either Supabase accepted or we didn't configure it)

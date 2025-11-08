@@ -92,3 +92,46 @@ Se quiser, eu posso:
 - gerar os comandos SQL completos e copiá-los no painel do Supabase;
 - criar um pequeno script para rodar localmente que valida os inputs antes do envio;
 - ou gerar um backend Node/Express minimal caso queira mais controle.
+
+## Usando MySQL local com backend Node/Express
+
+Se você abriu o MySQL local e prefere usar ele para mostrar que sabe trabalhar com bancos relacionais, adicionei uma pequena API de exemplo em `api/` que insere os contatos na tabela `contacts`.
+
+Passos para executar localmente:
+
+1. Entre na pasta `api` e instale dependências:
+
+```powershell
+cd api
+npm install
+```
+
+2. Crie a base de dados e a tabela `contacts` no MySQL (use o arquivo `api/schema.sql`):
+
+```sql
+-- execute no seu cliente MySQL
+CREATE DATABASE IF NOT EXISTS projeto1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE projeto1;
+-- então rode o conteúdo de api/schema.sql
+```
+
+3. Copie `.env.example` para `.env` dentro da pasta `api` e ajuste as credenciais do seu MySQL:
+
+```powershell
+cd api
+cp .env.example .env
+# edite .env e ajuste DB_USER/DB_PASS/DB_NAME
+```
+
+4. Rode o servidor:
+
+```powershell
+cd api
+npm start
+```
+
+5. No frontend, abra `js/main.js` e preencha `API_ENDPOINT` com o endereço do servidor (por exemplo `http://localhost:3000/api/contact`). O formulário usará esse endpoint antes de tentar Supabase.
+
+Observações:
+- O backend incluído é mínimo e destinado a demonstração/local. Em produção, proteja o endpoint, adicione validações e autenticação conforme necessário.
+- Se quiser eu configuro um deploy do backend (por exemplo Railway/Render) e atualizo o `API_ENDPOINT` no front.
