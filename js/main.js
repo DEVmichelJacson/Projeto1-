@@ -1,5 +1,36 @@
 // JS avançado para interatividade do site SKYFIT (menu, header scroll, fade-in, partículas, formulário)
 document.addEventListener('DOMContentLoaded', function(){
+  // --- Optional Supabase configuration ---
+  // To enable saving contacts to Supabase, set these two constants to your project values.
+  // Example:
+  // const SUPABASE_URL = 'https://xyzabc.supabase.co';
+  // const SUPABASE_ANON_KEY = 'eyJhbGciOiJI...';
+  const SUPABASE_URL = '';
+  const SUPABASE_ANON_KEY = '';
+
+  // Helper: insert contact into Supabase via the REST endpoint (no client lib required)
+  async function supabaseInsertContact({ name, email, message }){
+    if(!SUPABASE_URL || !SUPABASE_ANON_KEY) return { ok: false, error: 'Supabase not configured' };
+    try{
+      const res = await fetch(`${SUPABASE_URL.replace(/\/+$/,'')}/rest/v1/contacts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify([{ name, email, message }])
+      });
+      const data = await res.json();
+      if(!res.ok){
+        return { ok: false, error: data };
+      }
+      return { ok: true, data };
+    }catch(err){
+      return { ok: false, error: err.message || err };
+    }
+  }
   // ano no rodapé
   const yearEl = document.getElementById('year');
   if(yearEl) yearEl.textContent = new Date().getFullYear();
@@ -171,8 +202,23 @@ document.addEventListener('DOMContentLoaded', function(){
         submitBtn.classList.add('btn-sending');
         const original = submitBtn.textContent;
         submitBtn.textContent = 'Enviando...';
-        setTimeout(()=>{
-          // animação de sucesso
+        (async ()=>{
+          // If Supabase is configured, try to insert to the DB. Otherwise fall back to local success animation.
+          let supaResult = { ok: false };
+          if(SUPABASE_URL && SUPABASE_ANON_KEY){
+            supaResult = await supabaseInsertContact({ name, email, message: msg });
+          }
+
+          // If Supabase was used and returned an error, show it and abort success animation
+          if(supaResult && supaResult.ok === false && (SUPABASE_URL && SUPABASE_ANON_KEY)){
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('btn-sending');
+            submitBtn.textContent = original;
+            if(status) status.textContent = 'Erro ao enviar (Supabase): ' + (supaResult.error?.message || JSON.stringify(supaResult.error));
+            return;
+          }
+
+          // sucesso (either Supabase accepted or we didn't configure it)
           submitBtn.classList.remove('btn-sending');
           submitBtn.classList.add('btn-success');
           submitBtn.textContent = 'Enviado ✓';
@@ -195,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function(){
             submitBtn.textContent = original;
             if(status) status.textContent = '';
           }, 2400);
-        }, 1000);
+        })();
       }
     });
   }

@@ -42,3 +42,53 @@ Alternativa: criar workflow que publique para gh-pages automaticamente. Posso ge
 ---
 
 Se quiser, eu gero um `workflow` do GitHub Actions para deploy automático no GitHub Pages.
+
+## Integração com banco de dados (Supabase) — rápido e simples
+
+Se você quer demonstrar conhecimento básico de banco de dados sem criar um backend, recomendo usar Supabase (Postgres gerenciado).
+
+Passos rápidos:
+
+1. Crie uma conta em https://supabase.com e crie um novo projeto.
+2. No painel SQL (ou Table Editor) crie a tabela `contacts` com este SQL mínimo:
+
+```sql
+create table public.contacts (
+	id uuid primary key default gen_random_uuid(),
+	name text,
+	email text,
+	message text,
+	created_at timestamptz default now()
+);
+```
+
+3. Habilite Row Level Security (RLS) para a tabela `contacts` e então crie uma policy que permita inserts anônimos (somente para demo). Exemplo:
+
+```sql
+alter table public.contacts enable row level security;
+
+create policy "allow insert for anon" on public.contacts
+	for insert
+	using (true)
+	with check (true);
+```
+
+4. No Project Settings → API copie a `URL` do projeto (algo como `https://xyz.supabase.co`) e a `anon` (public) key.
+
+5. Abra `js/main.js` e preencha as duas constantes no topo:
+
+```js
+const SUPABASE_URL = 'https://xyz.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJ...';
+```
+
+6. Agora, quando alguém enviar o formulário de contato, o site fará um POST direto para o endpoint REST do Supabase para inserir na tabela `contacts`.
+
+Observações de segurança:
+- Usar a `anon` key é aceitável para inserts quando você controla a política RLS que restringe o que pode ser inserido. Evite usar a `service_role` key no frontend — essa chave tem privilégios administrativos.
+- Para produção, prefira criar validações (policies mais estritas) ou uma função server-side que receba o formulário e escreva na DB.
+
+Se quiser, eu posso:
+- gerar os comandos SQL completos e copiá-los no painel do Supabase;
+- criar um pequeno script para rodar localmente que valida os inputs antes do envio;
+- ou gerar um backend Node/Express minimal caso queira mais controle.
